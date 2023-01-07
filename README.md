@@ -1,5 +1,275 @@
 # OAuth-server
 
+## Resources
+
+1. [OAuth 2.0 Authorization Framework](https://www.rfc-editor.org/rfc/rfc6749)
+2. [OAuth 2.0 Simplified](https://www.oauth.com/)
+3. [oauth2orize](https://www.oauth2orize.org/), [github](https://github.com/jaredhanson/oauth2orize)
+
+## RoadMap
+
+| Feature                                   | Description                                                                                                                                          | Status |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Resource Owner Password Credentials Grant | The resource owner password credentials `grant` workflow allows for the exchanging of the `username` and `password` of a user for an access `token`. | 🕙     |
+| authorization code                        |                                                                                                                                                      | 🛑     |
+
+1. Workflow of Resource Owner Password Credentials Grant
+
+`Obtain user credentials`: The user provides the credentials to the application. The user credentials are the resource owner’s user name and password.
+
+**Parameters used in the access token request**
+
+| Parameter                     | Description                                                                                                | Example                                                                                         |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `X-USER-IDENTITY-DOMAIN-NAME` | The name of the identity domain.                                                                           |                                                                                                 |
+| `Authorization: Basic`        | The client identifier and client secret of the client application is base64–encoded and sent in the header | For example, the Authorization header has the value of base64encoded(`client_id:client_secret`) |
+| `grant_type`                  | The grant type used to obtain the token                                                                    | `grant_type=password`                                                                           |
+| `Content-Type`                | It’s a URL-encoded application                                                                             |                                                                                                 |
+
+**example**
+
+```bash
+curl -i -H 'X-USER-IDENTITY-DOMAIN-NAME: OAuthTestTenant125'
+-H 'Authorization: Basic MzAzYTI0OTItZDY0Zi00ZTA0LWI3OGYtYjQzMzAwNDczMTJiOll5Sk5NSkdFc0ZqUkxWZVZsdVMz'
+-H 'Content-Type: application/x-www-form-urlencoded;charset=UTF-8'
+--request POST https://<idm-domain>.identity.<data-center>.oraclecloud.com/oauth/tokens
+-d 'grant_type=password
+&username=test
+&password=test
+&scope=http://www.example.com'
+```
+
+**Output**
+
+```json
+{
+  "expires_in": 3600,
+  "token_type": "Bearer",
+  "access_token": "eyJhbGciO-x8XWmQtUR6c_jkE6TlMPp7AzR32QudnAA"
+}
+```
+
+## Build an OAuth 2 server steps
+
+1. Choose a grant type or types to support. The grant types define how clients can request access tokens from the authorization server. The OAuth 2 specification defines four grant types: `authorization code`, implicit, `resource owner password credentials`, and `client credentials`.
+
+2. Define the client model
+
+```javascript
+const clients = [
+  {
+    clientId: "abc123",
+    clientSecret: "xyz456",
+    redirectUri: "https://example.com/callback",
+    grantTypes: ["authorization_code", "password"],
+  },
+];
+
+const users = [
+  {
+    username: "user1",
+    password: "password1",
+  },
+  // ...
+];
+```
+
+The client model should include the following fields:
+
+`clientId`: The unique ID of the client.
+`clientSecret`: The client secret, which is used to authenticate the client when making requests to the authorization server.
+`redirectUri`: The redirect URI, which is the URI that the authorization server will redirect the user to after the user grants or denies access.
+`grantTypes`: The grant types that the client is allowed to use.
+
+3. End-points
+
+a. resource owner password credentials
+
+```javascript
+app.post("/token", function (req, res) {
+  var auth = req.headers["authorization"];
+  if (auth) {
+    // check the auth header
+    var clientCredentials = Buffer.from(auth.slice("basic ".length), "base64")
+      .toString()
+      .split(":");
+    var clientId = querystring.unescape(clientCredentials[0]);
+    var clientSecret = querystring.unescape(clientCredentials[1]);
+  }
+
+  // otherwise, check the post body
+  if (req.body.client_id) {
+    if (clientId) {
+      // if we've already seen the client's credentials in the authorization header, this is an error
+      console.log("Client attempted to authenticate with multiple methods");
+      res.status(401).json({ error: "invalid_client" });
+      return;
+    }
+
+    var clientId = req.body.client_id;
+    var clientSecret = req.body.client_secret;
+  }
+
+  var client = getClient(clientId);
+  if (!client) {
+    console.log("Unknown client %s", clientId);
+    res.status(401).json({ error: "invalid_client" });
+    return;
+  }
+
+  if (client.client_secret != clientSecret) {
+    console.log(
+      "Mismatched client secret, expected %s got %s",
+      client.client_secret,
+      clientSecret
+    );
+    res.status(401).json({ error: "invalid_client" });
+    return;
+  }
+
+  if (req.body.grant_type == "authorization_code") {
+    var code = codes[req.body.code];
+
+    if (code) {
+      delete codes[req.body.code]; // burn our code, it's been used
+      if (code.request.client_id == clientId) {
+        var access_token = randomstring.generate();
+
+        nosql.insert({
+          access_token: access_token,
+          client_id: clientId,
+          scope: code.scope,
+        });
+
+        console.log("Issuing access token %s", access_token);
+        console.log("with scope %s", access_token, scope);
+
+        var cscope = null;
+        if (code.scope) {
+          cscope = code.scope.join(" ");
+        }
+
+        var token_response = {
+          access_token: access_token,
+          token_type: "Bearer",
+          scope: cscope,
+        };
+
+        res.status(200).json(token_response);
+        console.log("Issued tokens for code %s", req.body.code);
+
+        return;
+      } else {
+        console.log(
+          "Client mismatch, expected %s got %s",
+          code.request.client_id,
+          clientId
+        );
+        res.status(400).json({ error: "invalid_grant" });
+        return;
+      }
+    } else {
+      console.log("Unknown code, %s", req.body.code);
+      res.status(400).json({ error: "invalid_grant" });
+      return;
+    }
+  } else if (req.body.grant_type == "client_credentials") {
+    var scope = req.body.scope ? req.body.scope.split(" ") : undefined;
+    var client = getClient(query.client_id);
+    var cscope = client.scope ? client.scope.split(" ") : undefined;
+    if (__.difference(scope, cscope).length > 0) {
+      // client asked for a scope it couldn't have
+      res.status(400).json({ error: "invalid_scope" });
+      return;
+    }
+
+    var access_token = randomstring.generate();
+    var token_response = {
+      access_token: access_token,
+      token_type: "Bearer",
+      scope: scope.join(" "),
+    };
+    nosql.insert({
+      access_token: access_token,
+      client_id: clientId,
+      scope: scope,
+    });
+    console.log("Issuing access token %s", access_token);
+    res.status(200).json(token_response);
+    return;
+  } else if (req.body.grant_type == "refresh_token") {
+    nosql.find().make(function (builder) {
+      builder.where("refresh_token", req.body.refresh_token);
+      builder.callback(function (err, tokens) {
+        if (tokens.length == 1) {
+          var token = tokens[0];
+          if (token.client_id != clientId) {
+            console.log(
+              "Invalid client using a refresh token, expected %s got %s",
+              token.client_id,
+              clientId
+            );
+            nosql.remove().make(function (builder) {
+              builder.where("refresh_token", req.body.refresh_token);
+            });
+            res.status(400).end();
+            return;
+          }
+          console.log("We found a matching token: %s", req.body.refresh_token);
+          var access_token = randomstring.generate();
+          var token_response = {
+            access_token: access_token,
+            token_type: "Bearer",
+            refresh_token: req.body.refresh_token,
+          };
+          nosql.insert({ access_token: access_token, client_id: clientId });
+          console.log(
+            "Issuing access token %s for refresh token %s",
+            access_token,
+            req.body.refresh_token
+          );
+          res.status(200).json(token_response);
+          return;
+        } else {
+          console.log("No matching token was found.");
+          res.status(401).end();
+        }
+      });
+    });
+  } else if (req.body.grant_type == "password") {
+    var username = req.body.username;
+    var user = getUser(username);
+    if (!user) {
+      console.log("Unknown user %s", user);
+      res.status(401).json({ error: "invalid_grant" });
+      return;
+    }
+    console.log("user is %j ", user);
+
+    var password = req.body.password;
+    if (user.password != password) {
+      console.log(
+        "Mismatched resource owner password, expected %s got %s",
+        user.password,
+        password
+      );
+      res.status(401).json({ error: "invalid_grant" });
+      return;
+    }
+
+    var scope = req.body.scope;
+
+    var token_response = generateTokens(req, res, clientId, user, scope);
+
+    res.status(200).json(token_response);
+    return;
+  } else {
+    console.log("Unknown grant type %s", req.body.grant_type);
+    res.status(400).json({ error: "unsupported_grant_type" });
+  }
+});
+```
+
 ## building an app that talks to an existing OAuth 2.0 API
 
 ### Create an Application
@@ -186,6 +456,11 @@ if($error) {
 
 Because the token can be verified without doing a database lookup, there is no way to invalidate a token until it expires. You’ll need to take additional steps to invalidate tokens that are self-encoded, such as temporarily storing a list of revoked tokens, which is one use of the jti claim in the token. See [Refreshing Access Tokens for more information](https://www.oauth.com/oauth2-servers/access-tokens/refreshing-access-tokens/).
 
+**Refresh token flow**
+
+![image](imgs/refresh_token_flow.png)
+Referance: [datatracker.ietf.org](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-07#name-refresh-token)
+
 **Refreshing Access Tokens**
 
 This section describes how to allow your developers to use refresh tokens to obtain new access tokens. If your service issues refresh tokens along with the access token, then you’ll need to implement the Refresh grant type described here.
@@ -256,6 +531,8 @@ Large scale deployments may have more than one resource server. oogle’s servic
 ![image](https://www.oauth.com/wp-content/uploads/2016/08/google-apis.png)
 
 More details: https://www.oauth.com/oauth2-servers/the-resource-server/
+
+###
 
 ### OAuth for Native Apps
 

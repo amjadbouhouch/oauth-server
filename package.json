@@ -1,0 +1,29 @@
+{
+  "name": "oauth",
+  "private": true,
+  "version": "0.0.1",
+  "description": "## Resources",
+  "main": "index.js",
+  "scripts": {
+    "dev": "lerna run dev",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bootstrap": "lerna run bootstrap",
+    "postinstall": "yarn run bootstrap"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amjadbouhouch/oauth-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amjadbouhouch/oauth-server/issues"
+  },
+  "homepage": "https://github.com/amjadbouhouch/oauth-server#readme",
+  "devDependencies": {
+    "lerna": "^6.4.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
