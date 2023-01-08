@@ -7,15 +7,16 @@ import { grantTypes, grantType } from 'utils';
  * Method: `POST`
  *
  */
-export class OAuthRequestTokenClass {
-  @IsEnum(grantTypes)
-  @IsString()
+export class OAuthAuthorizeClass {
+  @IsEnum(grantTypes, {
+    message: 'grant_type not valid',
+  })
   @Expose()
   grant_type: grantType;
 
   @IsDefined()
   @Expose()
-  @IsString()
+  @IsEmail()
   email: string;
 
   @IsDefined()
@@ -31,29 +32,7 @@ export class OAuthRequestTokenClass {
   @Expose()
   @IsString()
   client_id: string;
-
   @Expose()
   @IsOptional()
   client_secret: string;
-}
-export class OAuthResourceOwnerPasswordCredentialsClass {
-  @IsEnum(grantTypes)
-  @Expose()
-  grant_type: grantType = 'resource_owner_password_credentials';
-
-  @IsDefined()
-  @Expose()
-  @IsString()
-  password: string;
-
-  @IsDefined()
-  @Expose()
-  @IsString()
-  @IsEmail()
-  email: string;
-
-  @IsDefined()
-  @Expose()
-  @IsString()
-  client_id: string;
 }

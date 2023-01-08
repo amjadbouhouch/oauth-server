@@ -2,11 +2,13 @@ import { OAuthController, UserController } from 'controller';
 import express, { NextFunction, Request, Response } from 'express';
 import { IOAuthServer } from 'interfaces';
 import { InversifyExpressServer } from 'inversify-express-utils';
-import { BaseHttpError, DbClient } from 'middleware';
+import { BaseHttpError, DbClient, JwtService } from 'middleware';
 import morgan from 'morgan';
-import { UserRepository } from 'Repository';
+import { UserRepository, ClientRepository, AccessTokenRepository } from 'Repository';
 import { OauthService, UserService } from 'services';
 import { STATUS_CODE } from 'utils/constants';
+import cors from 'cors';
+import bodyParser from 'body-parser';
 export default class OAuthServer extends IOAuthServer {
   //* * */
   async setup() {
@@ -25,6 +27,9 @@ export default class OAuthServer extends IOAuthServer {
 
     server.setConfig((app) => {
       app.use(express.json());
+      // support application/x-www-form-urlencoded
+      app.use(bodyParser.urlencoded({ extended: true }));
+      app.use(cors(['http://localhost:3000']));
       app.use(morgan('dev'));
     });
     const app = server.build();
@@ -34,11 +39,11 @@ export default class OAuthServer extends IOAuthServer {
     });
     process.on('SIGTERM', async () => {
       console.debug('SIGTERM signal received: closing HTTP server');
-      const db: DbClient = this._container.get<DbClient>(DbClient);
-      await db.disconnect();
-      console.debug('disconnecting from database');
       runningServer.close(async () => {
         console.debug('HTTP server closed');
+        const db: DbClient = this._container.get<DbClient>(DbClient);
+        await db.disconnect();
+        console.debug('disconnecting from database');
       });
     });
   }
@@ -53,5 +58,10 @@ export default class OAuthServer extends IOAuthServer {
     this._container.bind(UserRepository).toSelf();
     this._container.bind(UserService).toSelf();
     this._container.bind(UserController).toSelf();
+    // client
+    this._container.bind(ClientRepository).toSelf();
+    // jwt
+    this._container.bind(AccessTokenRepository).toSelf();
+    this._container.bind(JwtService).toSelf();
   }
 }

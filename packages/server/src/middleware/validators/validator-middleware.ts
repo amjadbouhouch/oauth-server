@@ -9,7 +9,6 @@ export class ValidatorMiddleware {
   }
 
   private async execute(req: Request, res: Response, next: NextFunction) {
-    console.log(req.body);
     const transformedBody = plainToInstance(this._class, req.body, {
       excludeExtraneousValues: true, // not extra attributes
       // ...this.options,
@@ -19,12 +18,12 @@ export class ValidatorMiddleware {
 
     if (errors.length > 0) {
       console.log(errors);
-      const messages = errors.map((error) => {
-        return Object.keys(error.constraints)
-          .map((key) => error.constraints[key])
-          .join(', ');
-      });
-      throw new BadRequestError(messages[0]);
+      // const messages = errors.map((error) => {
+      //   return Object.keys(error.constraints)
+      //     .map((key) => error.constraints[key])
+      //     .join(', ');
+      // });
+      throw new BadRequestError();
     }
 
     req.body = transformedBody;

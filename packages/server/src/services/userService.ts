@@ -6,6 +6,9 @@ import { User } from '@oauth/db-client';
 @injectable()
 export class UserService implements IService<User> {
   constructor(private readonly _userRepository: UserRepository) {}
+  create(payload: any): Promise<void | User> {
+    throw new Error('Method not implemented.');
+  }
 
   retrieve(id: string): Promise<User> {
     return this._userRepository.retrieve(id);
