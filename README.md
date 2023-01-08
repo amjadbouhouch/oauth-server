@@ -8,10 +8,13 @@
 
 ## RoadMap
 
-| Feature                                   | Description                                                                                                                                          | Status |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| Resource Owner Password Credentials Grant | The resource owner password credentials `grant` workflow allows for the exchanging of the `username` and `password` of a user for an access `token`. | 🕙     |
-| authorization code                        |                                                                                                                                                      | 🛑     |
+| Feature                                      | Description                     | Status |
+| -------------------------------------------- | ------------------------------- | ------ |
+| Database model                               | `Client model`, `User model`    | 🕙     |
+| Implement simple authentication flow         |                                 | 🛑     |
+| Implement simple authorization flow          | `grant_type=authorization_code` | 🛑     |
+| Build a web app for managing clients & users |                                 | 🛑     |
+|                                              |                                 | 🛑     |
 
 1. Workflow of Resource Owner Password Credentials Grant
 

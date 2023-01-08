@@ -13,5 +13,46 @@ datasource db {
 model User {
   id    String     @id @default(uuid())
   email String  @unique
-  name  String?
+  firstName  String?
+  lastName  String?
+  password  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  //
+  accessTokens AccessToken[]
+  //
+  @@index([email])
+}
+
+// Client refer to an application (web application, server...)
+model Client {
+  id    String     @id @default(uuid())
+  name String
+  clientId String @unique
+  clientSecret String
+  redirectUris Json @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  //
+  accessTokens AccessToken[]
+  @@index([clientId])
+}
+
+model AccessToken {
+  id    String     @id @default(uuid())
+  token                 String           @unique
+  refreshToken          String?          @unique
+  tokenExpiresAt DateTime?
+  refreshTokenExpiresAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  scopes Json @default("[]")
+  //
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  //
+  client           Client @relation(fields: [clientId], references: [id])
+  clientId String
+
+  @@index([userId,clientId])
 }

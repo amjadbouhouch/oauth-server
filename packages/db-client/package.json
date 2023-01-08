@@ -14,7 +14,7 @@
     "test:watch": "jest --config jest.config.js --watch",
     "postinstall": "yarn prisma:generate && yarn build",
     "prisma:generate": "prisma generate",
-    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:dev": "prisma migrate dev && yarn postinstall",
     "prisma:migrate:prod": "prisma migrate prod"
   },
   "dependencies": {
