@@ -16,6 +16,7 @@ export abstract class IOAuthServer {
       ...defaultOptions.inversifyOptions,
       ...options.inversifyOptions,
     });
+    global._container = this._container;
     this.configureService();
     this.setup(options);
     return this;

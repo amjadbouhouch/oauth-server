@@ -16,7 +16,8 @@ const Login = () => {
     try {
       const authService = new AuthService()
       const response = await authService.authenticate(data)
-      console.log(response)
+      localStorage.setItem('token', response.access_token)
+      location.reload()
     } catch (error) {
       console.error(error)
     }

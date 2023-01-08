@@ -1,14 +1,14 @@
-import { OAuthController, UserController } from 'controller';
+import bodyParser from 'body-parser';
+import { OAuthController, UserController, UserInfoController } from 'controller';
+import { ClientService, OauthService, UserService, AccessTokenService } from 'services';
+import { AccessTokenRepository, ClientRepository, UserRepository } from 'Repository';
+import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import { IOAuthServer } from 'interfaces';
 import { InversifyExpressServer } from 'inversify-express-utils';
-import { BaseHttpError, DbClient, JwtService } from 'middleware';
+import { BaseHttpError, BCryptService, DbClient, JwtService } from 'middleware';
 import morgan from 'morgan';
-import { UserRepository, ClientRepository, AccessTokenRepository } from 'Repository';
-import { OauthService, UserService } from 'services';
 import { STATUS_CODE } from 'utils/constants';
-import cors from 'cors';
-import bodyParser from 'body-parser';
 export default class OAuthServer extends IOAuthServer {
   //* * */
   async setup() {
@@ -49,19 +49,25 @@ export default class OAuthServer extends IOAuthServer {
   }
 
   configureService(): void {
-    // db stuff
-    this._container.bind(DbClient).toSelf();
-    // oath
-    this._container.bind(OauthService).toSelf();
-    this._container.bind(OAuthController).toSelf();
-    // users
-    this._container.bind(UserRepository).toSelf();
-    this._container.bind(UserService).toSelf();
-    this._container.bind(UserController).toSelf();
-    // client
-    this._container.bind(ClientRepository).toSelf();
-    // jwt
-    this._container.bind(AccessTokenRepository).toSelf();
+    // common
+    this._container.bind(BCryptService).toSelf();
     this._container.bind(JwtService).toSelf();
+    // db
+    this._container.bind(DbClient).toSelf();
+    // repositories
+    this._container.bind(UserRepository).toSelf();
+    this._container.bind(ClientRepository).toSelf();
+    this._container.bind(AccessTokenRepository).toSelf();
+
+    // services
+    this._container.bind(UserService).toSelf();
+    this._container.bind(ClientService).toSelf();
+    this._container.bind(OauthService).toSelf();
+    this._container.bind(AccessTokenService).toSelf();
+
+    // controllers
+    this._container.bind(OAuthController).toSelf();
+    this._container.bind(UserController).toSelf();
+    this._container.bind(UserInfoController).toSelf();
   }
 }

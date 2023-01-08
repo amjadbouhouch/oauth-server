@@ -6,6 +6,9 @@ import { User } from '@oauth/db-client';
 @injectable()
 export class UserRepository implements IRepository<User> {
   constructor(private readonly _dbService: DbClient) {}
+  create(payload: any): Promise<User> {
+    throw new Error('Method not implemented.');
+  }
   list(): Promise<User[]> {
     return this._dbService.user.findMany();
   }
@@ -19,16 +22,12 @@ export class UserRepository implements IRepository<User> {
     return user;
   }
 
-  async findByEmailAndPassword(email: string, password: string): Promise<User> {
-    const user = await this._dbService.user.findUnique({
+  async findByEmail(email: string): Promise<User | null> {
+    return await this._dbService.user.findUnique({
       where: {
         email,
       },
     });
-    if (!user) throw new NotFoundError(`wrong email or password.`);
-    // todo test password hash
-
-    return user;
   }
   update(payload: Partial<User>): Promise<void | User> {
     throw new Error('Method not implemented.');

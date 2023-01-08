@@ -2,16 +2,30 @@ import { IService } from '../interfaces/IService';
 import { injectable } from 'inversify';
 import { UserRepository } from '../Repository';
 import { User } from '@oauth/db-client';
+import { BCryptService, UnauthorizedError, NotFoundError } from 'middleware';
 
 @injectable()
 export class UserService implements IService<User> {
-  constructor(private readonly _userRepository: UserRepository) {}
+  constructor(private readonly _userRepository: UserRepository, private readonly _bcryptService: BCryptService) {}
+
+  async findByEmailAndPassword(email: string, password: string): Promise<User> {
+    const user = await this._userRepository.findByEmail(email);
+    if (!user) throw new UnauthorizedError('wring email or password');
+    const isMatched = await this._bcryptService.compare(password, user.password);
+    if (!isMatched) throw new UnauthorizedError('wring email or password');
+    return user;
+  }
   create(payload: any): Promise<void | User> {
     throw new Error('Method not implemented.');
   }
 
-  retrieve(id: string): Promise<User> {
-    return this._userRepository.retrieve(id);
+  async retrieve(id: string): Promise<User> {
+    const user = await this._userRepository.retrieve(id);
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+    const { password, createdAt, updatedAt, ...rest } = user;
+    return rest as User;
   }
   update(payload: Partial<User>): Promise<void | User> {
     return this._userRepository.update(payload);

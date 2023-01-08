@@ -1,24 +1,30 @@
 import { injectable } from 'inversify';
 import { IRepository } from './../interfaces';
 import { Client } from '@oauth/db-client';
-import { DbClient, NotFoundError } from 'middleware';
+import { DbClient } from 'middleware';
 
 @injectable()
 export class ClientRepository implements IRepository<Client> {
-  constructor(private readonly _dbService: DbClient) {}
-  list(): Promise<Client[]> {
-    throw new Error('Method not implemented.');
-  }
-  async retrieve(clientId: string): Promise<Client> {
-    const client = await this._dbService.client.findUnique({
+  retrieveByClientId(clientId: string) {
+    return this._dbService.client.findUnique({
       where: {
         clientId,
       },
     });
-    if (!client) {
-      throw new NotFoundError();
-    }
-    return client;
+  }
+  constructor(private readonly _dbService: DbClient) {}
+  create(payload: any): Promise<Client> {
+    throw new Error('Method not implemented.');
+  }
+  list(): Promise<Client[]> {
+    throw new Error('Method not implemented.');
+  }
+  retrieve(id: string): Promise<Client | null> {
+    return this._dbService.client.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
   update(payload: Client): Promise<any> {

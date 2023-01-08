@@ -1,19 +1,20 @@
-import { generateId } from './../utils/helper';
 import { RequestAccessTokenResponse } from 'interfaces';
-import { injectable } from 'inversify';
-import { OAuthAuthorizeClass } from './../middleware/validators/OAuthAuthorizeClass';
+import { injectable, inject, LazyServiceIdentifer } from 'inversify';
+import { JwtService, BadRequestError } from 'middleware';
+import { AccessTokenRepository } from 'Repository';
 import { OAuthResourceOwnerPasswordCredentialsClass } from '../middleware/validators/OAuthRequestTokenClass';
-import { AccessTokenRepository, ClientRepository, UserRepository } from 'Repository';
-import { JwtService } from 'middleware';
 import { generateUuid } from '../utils/helper';
+import { OAuthAuthorizeClass } from './../middleware/validators/OAuthAuthorizeClass';
+import { ClientService } from './clientService';
+import { UserService } from './userService';
 
 @injectable()
 export class OauthService {
   constructor(
-    private readonly _userRepository: UserRepository,
-    private readonly _ClientRepository: ClientRepository,
-    private readonly _jwtService: JwtService,
-    private readonly _accessTokenRepository: AccessTokenRepository,
+    @inject(new LazyServiceIdentifer(() => UserService)) private _userService: UserService,
+    @inject(new LazyServiceIdentifer(() => ClientService)) private _clientService: ClientService,
+    @inject(new LazyServiceIdentifer(() => JwtService)) private _jwtService: JwtService,
+    @inject(new LazyServiceIdentifer(() => AccessTokenRepository)) private _accessTokenRepository: AccessTokenRepository,
   ) {}
 
   async authorize(payload: OAuthAuthorizeClass) {
@@ -28,7 +29,9 @@ export class OauthService {
     throw new Error('Method not implemented.');
   }
   /** Authentication openId connect */
-  async handleAuthentication(payload: OAuthAuthorizeClass) {}
+  async handleAuthentication(payload: OAuthAuthorizeClass) {
+    throw new Error('Method not implemented.');
+  }
   /**
    *
    * @returns
@@ -46,10 +49,8 @@ export class OauthService {
   async requestAccessTokenByResourceOwnerPasswordCredentials(
     payload: OAuthResourceOwnerPasswordCredentialsClass,
   ): Promise<RequestAccessTokenResponse> {
-    // fetch the user
-    const user = await this._userRepository.findByEmailAndPassword(payload.email, payload.password);
-    // fetch the client
-    const client = await this._ClientRepository.retrieve(payload.client_id);
+    const user = await this._userService.findByEmailAndPassword(payload.email, payload.password);
+    const client = await this._clientService.retrieveByClientId(payload.client_id);
     // generate accessToken
     const now = new Date();
     const oneYearAfter = now.setDate(now.getDate() + 365);
@@ -66,8 +67,9 @@ export class OauthService {
       scopes: [],
       email: user.email,
       email_verified: true,
-      typ: 'Bearer',
+      clientId: client.clientId,
       azp: client.clientId,
+      type: 'Bearer',
     };
 
     const access_token = this._jwtService.generateToken(tokenPayload);
@@ -87,10 +89,11 @@ export class OauthService {
       },
       scopes: tokenPayload.scopes,
     });
+
     return {
       access_token: createdToken.token,
       expires_in: tokenPayload.exp,
-      token_type: tokenPayload.typ,
+      token_type: tokenPayload.type,
     };
   }
 }

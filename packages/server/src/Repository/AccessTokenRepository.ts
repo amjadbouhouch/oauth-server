@@ -15,8 +15,12 @@ export class AccessTokenRepository implements IRepository<AccessToken> {
   list(): Promise<AccessToken[]> {
     throw new Error('Method not implemented.');
   }
-  retrieve(id: string): Promise<AccessToken> {
-    throw new Error('Method not implemented.');
+  retrieve(id: string): Promise<AccessToken | null> {
+    return this._dbClient.accessToken.findUnique({
+      where: {
+        id,
+      },
+    });
   }
   update(payload: AccessToken): Promise<any> {
     throw new Error('Method not implemented.');
