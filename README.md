@@ -8,49 +8,91 @@
 
 ## RoadMap
 
-| Feature                                      | Description                     | Status |
-| -------------------------------------------- | ------------------------------- | ------ |
-| Database model                               | `Client model`, `User model`    | 🕙     |
-| Implement simple authentication flow         |                                 | 🛑     |
-| Implement simple authorization flow          | `grant_type=authorization_code` | 🛑     |
-| Build a web app for managing clients & users |                                 | 🛑     |
-|                                              |                                 | 🛑     |
+| Feature                                                                      | Description                     | Status |
+| ---------------------------------------------------------------------------- | ------------------------------- | ------ |
+| Database model                                                               | `Client model`, `User model`    | ✅     |
+| Implement simple authentication flow                                         | `implement openid connect`      | ✅     |
+| Implement simple authorization flow                                          | `grant_type=code`               | 🛑     |
+| Implement simple authorization flow using `authorization_code` (server side) | `grant_type=authorization_code` | 🛑     |
 
-1. Workflow of Resource Owner Password Credentials Grant
+## packages
 
-`Obtain user credentials`: The user provides the credentials to the application. The user credentials are the resource owner’s user name and password.
+### @oauth/db-client
 
-**Parameters used in the access token request**
+- Database connector using `prisma`
 
-| Parameter                     | Description                                                                                                | Example                                                                                         |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `X-USER-IDENTITY-DOMAIN-NAME` | The name of the identity domain.                                                                           |                                                                                                 |
-| `Authorization: Basic`        | The client identifier and client secret of the client application is base64–encoded and sent in the header | For example, the Authorization header has the value of base64encoded(`client_id:client_secret`) |
-| `grant_type`                  | The grant type used to obtain the token                                                                    | `grant_type=password`                                                                           |
-| `Content-Type`                | It’s a URL-encoded application                                                                             |                                                                                                 |
+## model
 
-**example**
+```prisma
 
-```bash
-curl -i -H 'X-USER-IDENTITY-DOMAIN-NAME: OAuthTestTenant125'
--H 'Authorization: Basic MzAzYTI0OTItZDY0Zi00ZTA0LWI3OGYtYjQzMzAwNDczMTJiOll5Sk5NSkdFc0ZqUkxWZVZsdVMz'
--H 'Content-Type: application/x-www-form-urlencoded;charset=UTF-8'
---request POST https://<idm-domain>.identity.<data-center>.oraclecloud.com/oauth/tokens
--d 'grant_type=password
-&username=test
-&password=test
-&scope=http://www.example.com'
-```
-
-**Output**
-
-```json
-{
-  "expires_in": 3600,
-  "token_type": "Bearer",
-  "access_token": "eyJhbGciO-x8XWmQtUR6c_jkE6TlMPp7AzR32QudnAA"
+model User {
+  id    String     @id @default(uuid())
+  email String  @unique
+  firstName  String @default("")
+  lastName  String @default("")
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  //
+  accessTokens AccessToken[]
+  //
+  @@index([email])
 }
+
+// Client refer to an application (web application, server...)
+model Client {
+  id    String     @id @default(uuid())
+  name String
+  clientId String @unique
+  clientSecret String
+  redirectUris Json @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  //
+  accessTokens AccessToken[]
+  @@index([clientId])
+}
+
+model AccessToken {
+  id    String     @id @default(uuid())
+  token                 String           @unique
+  refreshToken          String?          @unique
+  tokenExpiresAt DateTime?
+  refreshTokenExpiresAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  scopes Json @default("[]")
+  type String @default("Bearer")
+  //
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  //
+  client           Client @relation(fields: [clientId], references: [id])
+  clientId String
+  @@index([userId,clientId])
+}
+
 ```
+
+### @oauth/server
+
+`Authorization & Authentication server`
+
+**endpoints**
+
+| endpoint                                                     | Description                                                 | Status |
+| ------------------------------------------------------------ | ----------------------------------------------------------- | ------ |
+| POST `/token&grant_type=resource_owner_password_credentials` | commonly used by trusted clients to obtain an access token. | ✅     |
+| POST `/token&grant_type=code`                                | exchange an authorization code grant for an access token.   | 🛑     |
+| POST `/token&grant_type=authorization_code`                  |                                                             | 🛑     |
+
+### @oauth/admin-console
+
+A simple `React Web app` for resting
+
+### @oauth/api
+
+A `resource owner` for testing. not implemented yet.
 
 ## Build an OAuth 2 server steps
 
