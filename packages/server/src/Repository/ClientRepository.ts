@@ -17,7 +17,7 @@ export class ClientRepository implements IRepository<Client> {
     throw new Error('Method not implemented.');
   }
   list(): Promise<Client[]> {
-    throw new Error('Method not implemented.');
+    return this._dbService.client.findMany();
   }
   retrieve(id: string): Promise<Client | null> {
     return this._dbService.client.findUnique({

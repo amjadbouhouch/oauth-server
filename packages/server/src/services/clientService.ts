@@ -8,7 +8,7 @@ import { ClientRepository } from '../Repository';
 export class ClientService implements IService<Client> {
   constructor(@inject(new LazyServiceIdentifer(() => ClientRepository)) private _clientRepo: ClientRepository) {}
   list(): Promise<Client[]> {
-    throw new Error('Method not implemented.');
+    return this._clientRepo.list();
   }
   retrieve(id: string): Promise<Client> {
     throw new Error('Method not implemented.');

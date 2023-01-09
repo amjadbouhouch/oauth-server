@@ -1,12 +1,12 @@
 import bodyParser from 'body-parser';
-import { OAuthController, UserController, UserInfoController } from 'controller';
+import { OAuthController, UserController, UserInfoController, ClientController } from 'controller';
 import { ClientService, OauthService, UserService, AccessTokenService } from 'services';
 import { AccessTokenRepository, ClientRepository, UserRepository } from 'Repository';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import { IOAuthServer } from 'interfaces';
 import { InversifyExpressServer } from 'inversify-express-utils';
-import { BaseHttpError, BCryptService, DbClient, JwtService } from 'middleware';
+import { BaseHttpError, BCryptService, DbClient, JwtService, AccessTokenValidator } from 'middleware';
 import morgan from 'morgan';
 import { STATUS_CODE } from 'utils/constants';
 export default class OAuthServer extends IOAuthServer {
@@ -52,6 +52,7 @@ export default class OAuthServer extends IOAuthServer {
     // common
     this._container.bind(BCryptService).toSelf();
     this._container.bind(JwtService).toSelf();
+    this._container.bind(AccessTokenValidator).toSelf();
     // db
     this._container.bind(DbClient).toSelf();
     // repositories
@@ -69,5 +70,6 @@ export default class OAuthServer extends IOAuthServer {
     this._container.bind(OAuthController).toSelf();
     this._container.bind(UserController).toSelf();
     this._container.bind(UserInfoController).toSelf();
+    this._container.bind(ClientController).toSelf();
   }
 }

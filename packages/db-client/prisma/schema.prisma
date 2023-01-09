@@ -11,48 +11,55 @@ datasource db {
 }
 
 model User {
-  id    String     @id @default(uuid())
-  email String  @unique
-  firstName  String @default("")
-  lastName  String @default("")
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
+  id           String        @id @default(uuid())
+  email        String        @unique
+  firstName    String        @default("")
+  lastName     String        @default("")
+  password     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now()) @updatedAt
   //
   accessTokens AccessToken[]
+
   //
   @@index([email])
 }
 
 // Client refer to an application (web application, server...)
 model Client {
-  id    String     @id @default(uuid())
-  name String
-  clientId String @unique
+  id           String  @id @default(uuid())
+  name         String  @default("")
+  clientId     String  @unique
   clientSecret String
-  redirectUris Json @default("[]")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  redirectUris Json    @default("[]")
+  enabled      Boolean @default(true)
+  webOrigins   Json    @default("[]")
+
   //
   accessTokens AccessToken[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([clientId])
 }
 
 model AccessToken {
-  id    String     @id @default(uuid())
-  token                 String           @unique
-  refreshToken          String?          @unique
-  tokenExpiresAt DateTime?
+  id                    String    @id @default(uuid())
+  token                 String    @unique
+  refreshToken          String?   @unique
+  tokenExpiresAt        DateTime?
   refreshTokenExpiresAt DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  scopes Json @default("[]")
-  type String @default("Bearer")
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  scopes                Json      @default("[]")
+  type                  String    @default("Bearer")
   //
-  user User @relation(fields: [userId], references: [id])
-  userId String
+  user                  User      @relation(fields: [userId], references: [id])
+  userId                String
   //
-  client           Client @relation(fields: [clientId], references: [id])
-  clientId String
-  @@index([userId,clientId])
+  client                Client    @relation(fields: [clientId], references: [id])
+  clientId              String
+
+  @@index([userId, clientId])
 }

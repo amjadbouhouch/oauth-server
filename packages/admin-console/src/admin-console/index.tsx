@@ -1,14 +1,17 @@
-import { AppShell, Text, useMantineTheme } from '@mantine/core'
+import { AppShell, useMantineTheme } from '@mantine/core'
 import { useQuery } from '@tanstack/react-query'
+import useTitle from 'hooks/useTitle'
 import { useState } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { userService } from '../api'
+import { AdminConsoleContextProvider } from '../context/AdminConsoleContext'
 import Clients from './Clients'
 import Header from './Header'
 import SideBar from './SideBar'
-import { AdminConsoleContextProvider } from '../context/AdminConsoleContext'
 
 const AdminConsole = ({ match }) => {
+  useTitle('Console')
+
   const { url } = match
 
   const { data, error, isSuccess } = useQuery(

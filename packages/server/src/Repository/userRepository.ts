@@ -17,6 +17,9 @@ export class UserRepository implements IRepository<User> {
       where: {
         id: id,
       },
+      include: {
+        accessTokens: true,
+      },
     });
     if (!user) throw new NotFoundError(`User not found with Id=${id}`);
     return user;

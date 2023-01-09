@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
+import { injectable } from 'inversify';
 import { BadRequestError, JwtService } from 'middleware';
 import { AccessTokenService, ClientService, UserService } from 'services';
 import { UnauthorizedError } from './../errors/UnauthorizedError';
 
+@injectable()
 export class AccessTokenValidator {
   // add resource
   constructor() {}
@@ -19,6 +21,10 @@ export class AccessTokenValidator {
       // accessToken id
       jti,
       clientId,
+      allowed_origins = [],
+      scopes = [],
+      azp: clientToAccess,
+      ...rest
     } = payload;
 
     const accessTokenService: AccessTokenService = global._container.get<AccessTokenService>(AccessTokenService);
@@ -29,7 +35,6 @@ export class AccessTokenValidator {
     if (type !== accessToken.type) {
       throw new BadRequestError('missing grant type');
     }
-
     const user = await userService.retrieve(accessToken.userId);
     const client = await clientService.retrieveByClientId(clientId);
     req.accessToken = accessToken;

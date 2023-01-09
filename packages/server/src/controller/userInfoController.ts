@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { controller, httpGet, request, response } from 'inversify-express-utils';
 import { AccessTokenValidator } from 'middleware';
+import { ScopeValidator } from 'middleware/RequestValidator';
 
 // openid connect
 @controller('/userinfo')

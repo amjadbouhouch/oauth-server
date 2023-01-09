@@ -38,9 +38,11 @@ export class OAuthController {
     }
     const errors = await validate(transformedBody);
     if (errors.length > 0) {
-      console.log(errors);
-
-      throw new BadRequestError(JSON.stringify(errors[0]));
+      const errorMessage = '';
+      if (errors[0].constraints && Object.keys(errors[0].constraints).length > 0) {
+        // errorMessage = Object.keys(errors[0].constraints)[0]
+      }
+      throw new BadRequestError(errorMessage);
     }
     const response = await this._oauthService.requestAccessTokenByResourceOwnerPasswordCredentials(req.body);
     res.status(200).send(response);

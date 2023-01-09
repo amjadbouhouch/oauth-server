@@ -13,11 +13,13 @@ import {
   Group,
   Button
 } from '@mantine/core'
+import useTitle from 'hooks/useTitle'
 type LoginFormType = {
   email: string
   password: string
 }
 const Login = () => {
+  useTitle('Login Page')
   const { register, handleSubmit, formState } = useForm<LoginFormType>({
     defaultValues: {
       email: 'admin@oauth.com',

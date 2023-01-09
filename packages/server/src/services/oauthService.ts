@@ -44,7 +44,7 @@ export class OauthService {
     };
   }
   /**
-   *
+   * @ grant_type=resource_owner_password_credentials
    */
   async requestAccessTokenByResourceOwnerPasswordCredentials(
     payload: OAuthResourceOwnerPasswordCredentialsClass,

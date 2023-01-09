@@ -17,12 +17,6 @@ export class ValidatorMiddleware {
     const errors = await validate(transformedBody);
 
     if (errors.length > 0) {
-      console.log(errors);
-      // const messages = errors.map((error) => {
-      //   return Object.keys(error.constraints)
-      //     .map((key) => error.constraints[key])
-      //     .join(', ');
-      // });
       throw new BadRequestError();
     }
 
