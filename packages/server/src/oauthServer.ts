@@ -14,7 +14,7 @@ export default class OAuthServer extends IOAuthServer {
   async setup() {
     const server = new InversifyExpressServer(this._container);
     server.setErrorConfig((app) => {
-      app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+      app.use((err: any, _, res: Response, next: NextFunction) => {
         console.error(err);
         if (err instanceof BaseHttpError) {
           res.status(err.statusCode).send(err.message);
