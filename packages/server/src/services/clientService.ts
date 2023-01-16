@@ -16,7 +16,7 @@ export class ClientService implements IService<Client> {
 
   async retrieveByClientId(clientId: string): Promise<Client> {
     const client = await this._clientRepo.retrieveByClientId(clientId);
-    if (!client) throw new NotFoundError('Client not found');
+    if (!client) throw new NotFoundError();
     return client;
   }
   update(payload: any): Promise<void | Client> {

@@ -8,7 +8,12 @@ declare module 'express' {
     client: Client;
   }
 }
-
+declare module 'express-session' {
+  interface Session {
+    isAuthenticated: boolean;
+    userId: string;
+  }
+}
 declare global {
   namespace NodeJS {
     interface Global {

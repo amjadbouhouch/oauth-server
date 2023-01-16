@@ -9,10 +9,12 @@ export class UserService implements IService<User> {
   constructor(private readonly _userRepository: UserRepository, private readonly _bcryptService: BCryptService) {}
 
   async findByEmailAndPassword(email: string, password: string): Promise<User> {
+    console.log(email);
+
     const user = await this._userRepository.findByEmail(email);
-    if (!user) throw new UnauthorizedError('wring email or password');
+    if (!user) throw new UnauthorizedError('wrong email or password');
     const isMatched = await this._bcryptService.compare(password, user.password);
-    if (!isMatched) throw new UnauthorizedError('wring email or password');
+    if (!isMatched) throw new UnauthorizedError('wrong email or password');
     return user;
   }
   create(payload: any): Promise<void | User> {
@@ -22,7 +24,7 @@ export class UserService implements IService<User> {
   async retrieve(id: string): Promise<User> {
     const user = await this._userRepository.retrieve(id);
     if (!user) {
-      throw new NotFoundError('User not found');
+      throw new NotFoundError();
     }
     const { password, createdAt, updatedAt, ...rest } = user;
     return rest as User;

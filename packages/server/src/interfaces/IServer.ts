@@ -8,7 +8,7 @@ const defaultOptions: ApplicationOptionsType = {
     defaultScope: 'Singleton',
   },
 };
-export abstract class IOAuthServer {
+export abstract class IServer {
   protected readonly _container: Container;
 
   constructor(options: ApplicationOptionsType = defaultOptions) {

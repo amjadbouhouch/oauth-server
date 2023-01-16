@@ -6,3 +6,7 @@ export enum STATUS_CODE {
   UNAUTHORIZED = 401,
   FORBIDDEN = 403,
 }
+export class Constants {
+  //
+  public static readonly ADMIN_CONSOLE_CLIENT_ID: string = 'admin-console-client';
+}

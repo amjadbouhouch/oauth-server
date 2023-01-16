@@ -26,7 +26,7 @@ export class UserRepository implements IRepository<User> {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this._dbService.user.findUnique({
+    return this._dbService.user.findUnique({
       where: {
         email,
       },

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authorization page</title>
+    <link href="/output.css" rel="stylesheet" />
+  </head>
+  <body>
+    <section class="bg-gray-50 dark:bg-gray-900">
+      <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        <a class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"> Authorization </a>
+        <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+          <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+            <!-- <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Sign in to your account</h1> -->
+            <form class="space-y-4 md:space-y-6" method="post" action="">
+              <div>
+                <% authorizationsList.forEach((element) => { %>
+                <h1><%= element.title %></h1>
+                <div><%= element.description %></div>
+                <% }); %>
+              </div>
+              <div class="flex items-center justify-end space-x-4">
+                <button
+                  type="submit"
+                  name="consent"
+                  value="deny"
+                  class="text-black bg-gray-100 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                >
+                  Deny
+                </button>
+                <button
+                  type="submit"
+                  name="consent"
+                  value="allow"
+                  class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Allow
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

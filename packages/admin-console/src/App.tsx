@@ -11,6 +11,7 @@ import {
   MantineProvider
 } from '@mantine/core'
 import { useState } from 'react'
+import OAuth from 'OAuth'
 
 const accessToken = localStorage.getItem('token')
 
@@ -27,9 +28,12 @@ const App = () => {
       toggleColorScheme={toggleColorScheme}
     >
       <MantineProvider
-        theme={{ colorScheme }}
+        theme={{
+          colorScheme,
+          fontFamily: 'system-ui'
+        }}
         withGlobalStyles
-        // withNormalizeCSS
+        withNormalizeCSS
       >
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
@@ -44,6 +48,12 @@ const App = () => {
                 path="/login"
                 authorized={!isLoggedIn}
                 component={Login}
+                redirectTo={'/admin-console'}
+              />
+              <GuardedRoute
+                path="/oauth"
+                authorized={!isLoggedIn}
+                component={OAuth}
                 redirectTo={'/admin-console'}
               />
               <Route path="/">

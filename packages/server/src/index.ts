@@ -1,12 +1,12 @@
 import 'reflect-metadata';
 import 'dotenv/config';
 import 'express-async-errors';
-import OauthServer from 'oauthServer';
+import Server from 'server';
 
 console.clear();
 
 function bootstrap() {
-  const app = new OauthServer();
+  const app = new Server();
 }
 
 bootstrap();
