@@ -1,14 +1,12 @@
 import BaseAPIClient from './BaseAPIClient'
 
 export class AuthService extends BaseAPIClient {
-  // request a token
-  authenticate(payload: { email: string; password: string }) {
+  requestAccessToken(payload: { code: string; client_id: string }) {
     const body = {
       ...payload,
-      grant_type: 'resource_owner_password_credentials',
-      client_id: 'security-admin-console'
+      grant_type: 'authorization_code'
     }
-    return this.instance.post('/oauth/token', body, {
+    return this.instance.post('/token', body, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }

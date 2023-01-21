@@ -27,16 +27,16 @@ const Login = () => {
       password: 'admin'
     }
   })
-  async function onSubmit(data: LoginFormType) {
-    try {
-      const authService = new AuthService()
-      const response = await authService.authenticate(data)
-      localStorage.setItem('token', response.access_token)
-      location.reload()
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  // async function onSubmit(data: LoginFormType) {
+  //   try {
+  //     const authService = new AuthService()
+  //     const response = await authService.authenticate(data)
+  //     localStorage.setItem('token', response.access_token)
+  //     location.reload()
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // }
   const redirectToOauth = () => {
     const queryBuilder = new QueryBuilder()
     const fullUrl = queryBuilder

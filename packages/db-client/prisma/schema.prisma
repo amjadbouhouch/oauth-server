@@ -18,6 +18,7 @@ model User {
   password     String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @default(now()) @updatedAt
+  role         Role          @default(USER)
   //
   accessTokens AccessToken[]
 
@@ -27,14 +28,15 @@ model User {
 
 // Client refer to an application (web application, server...)
 model Client {
-  id           String  @id @default(uuid())
-  name         String  @default("")
-  clientId     String  @unique
+  id           String        @id @default(uuid())
+  name         String        @default("")
+  clientId     String        @unique
   clientSecret String
-  redirectUris Json    @default("[]")
-  enabled      Boolean @default(true)
-  webOrigins   Json    @default("[]")
-
+  redirectUris Json          @default("[]")
+  enabled      Boolean       @default(true)
+  webOrigins   Json          @default("[]")
+  // external client or not
+  isPublic     Boolean       @default(true)
   //
   accessTokens AccessToken[]
 
@@ -62,4 +64,9 @@ model AccessToken {
   clientId              String
 
   @@index([userId, clientId])
+}
+
+enum Role {
+  ADMIN
+  USER
 }

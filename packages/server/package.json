@@ -27,6 +27,7 @@
     "http-proxy-middleware": "^2.0.6",
     "inversify": "^6.0.1",
     "inversify-express-utils": "^6.4.3",
+    "jose": "^4.11.2",
     "jsonwebtoken": "^9.0.0",
     "memorystore": "^1.6.7",
     "morgan": "^1.10.0",

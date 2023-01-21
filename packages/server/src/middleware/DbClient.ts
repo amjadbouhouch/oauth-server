@@ -26,6 +26,7 @@ export class DbClient {
           firstName: 'Bouhouch',
           lastName: 'Amjed',
           password: hashedPassword,
+          role: 'USER',
         },
       });
 
@@ -40,6 +41,8 @@ export class DbClient {
           clientSecret: generateId(),
           name: 'Admin console',
           redirectUris: ['http://localhost:3000/oauth'],
+          isPublic: false,
+          enabled: true,
         },
       });
     } catch (error) {

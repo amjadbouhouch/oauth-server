@@ -29,7 +29,7 @@ export class AuthorizationService {
    * @returns
    */
   generateAuthorizationCode(payload): string {
-    const code = generateUuid();
+    const code = generateUuid() + generateUuid();
     this._codes.set(code, payload);
     return code;
   }
@@ -79,7 +79,7 @@ export class AuthorizationService {
    *
    * @returns
    */
-  async requestAccessToken(payload: any): Promise<RequestAccessTokenResponse> {
+  async requestAccessToken({ code, client_id }: any): Promise<RequestAccessTokenResponse> {
     return {
       access_token: '123',
       expires_in: 3600,
