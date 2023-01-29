@@ -8,7 +8,10 @@
     "serve": "vite preview",
     "test": "jest",
     "lint": "eslint src --max-warnings=0",
-    "typecheck": "tsc --project tsconfig.json --noEmit"
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "prebuild": "node ./generate-build-version.js",
+    "build:staging": "yarn prebuild && node --max-old-space-size=6144 ./node_modules/.bin/vite build --mode staging",
+    "build:production": "yarn prebuild && node --max-old-space-size=6144 ./node_modules/.bin/vite build"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
