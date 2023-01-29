@@ -1,12 +1,6 @@
-import {
-  Avatar,
-  Group,
-  Menu,
-  Text,
-  UnstyledButton,
-  useMantineTheme
-} from '@mantine/core'
+import { Avatar, Group, Menu, Text, UnstyledButton } from '@mantine/core'
 import { IconChevronRight, IconLogout, IconSettings } from '@tabler/icons'
+import { useAuth } from 'hooks/useAuth'
 import { forwardRef } from 'react'
 import { useAdminConsole } from '../../hooks/useAdminConsole'
 
@@ -59,10 +53,8 @@ UserButton.displayName = 'UserButton'
 
 const UserBox = () => {
   const { user } = useAdminConsole()
-  function logout() {
-    localStorage.clear()
-    location.reload()
-  }
+  const { logout } = useAuth()
+
   return (
     <Group position="center">
       <Menu withArrow>

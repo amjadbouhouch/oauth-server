@@ -13,7 +13,12 @@ export default class AccessTokenValidator {
     const [type, token] = authorizationHeader.split(' ');
     const jwtService: JwtService = global._container.get<JwtService>(JwtService);
     // throw new UnauthorizedError();
-    const payload = jwtService.verify(token);
+    let payload;
+    try {
+      payload = jwtService.verify(token);
+    } catch (error) {
+      throw new UnauthorizedError();
+    }
     if (!payload) throw new UnauthorizedError();
 
     const {

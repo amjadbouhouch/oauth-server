@@ -12,16 +12,15 @@ import {
 } from '@mantine/core'
 import { useState } from 'react'
 import OAuth from 'OAuth'
-
-const accessToken = localStorage.getItem('accessToken')
+import AuthProvider from 'context/AuthProvider'
+import { useAuth } from 'hooks/useAuth'
 
 const App = () => {
+  const { isLoggedIn } = useAuth()
   const [colorScheme, setColorScheme] = useState<ColorScheme>('light')
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
 
-  // just for test
-  const isLoggedIn = Boolean(accessToken)
   return (
     <ColorSchemeProvider
       colorScheme={colorScheme}
@@ -67,5 +66,11 @@ const App = () => {
     </ColorSchemeProvider>
   )
 }
-
-export default App
+const AppWrapper = () => {
+  return (
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  )
+}
+export default AppWrapper

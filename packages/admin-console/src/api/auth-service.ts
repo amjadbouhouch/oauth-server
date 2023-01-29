@@ -6,7 +6,7 @@ export class AuthService extends BaseAPIClient {
       ...payload,
       grant_type: 'authorization_code'
     }
-    return this.instance.post('/token', body, {
+    return this.instance.post<{ access_token: string }>('/token', body, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }

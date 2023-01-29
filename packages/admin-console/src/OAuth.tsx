@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { AuthService } from 'api'
+import { useAuth } from 'hooks/useAuth'
 import useQueryParams from 'hooks/useQueryParams'
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 interface OAuthProps {}
 const OAuth = ({}: OAuthProps) => {
   const { code, client_id } = useQueryParams()
-  const history = useHistory()
+  const { login } = useAuth()
   useEffect(() => {
     const authService = new AuthService()
     authService
@@ -15,8 +16,7 @@ const OAuth = ({}: OAuthProps) => {
         client_id
       })
       .then(({ access_token }) => {
-        localStorage.setItem('accessToken', access_token)
-        history.replace('/admin-console')
+        login(access_token)
       })
   }, [])
   return null
