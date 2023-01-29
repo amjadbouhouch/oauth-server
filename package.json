@@ -9,7 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "bootstrap": "lerna run bootstrap",
     "postinstall": "yarn run bootstrap",
-    "release": "lerna version --conventional-commits"
+    "release": "lerna version --conventional-commits",
+    "prerelease": "lerna version --conventional-prerelease"
   },
   "repository": {
     "type": "git",
