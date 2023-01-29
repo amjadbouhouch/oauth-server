@@ -20,13 +20,15 @@ export class DbClient {
       const hashedPassword = await this._bcryptService.hash('admin');
       await dbClient.user.upsert({
         where: { email: 'admin@oauth.com' },
-        update: {},
+        update: {
+          role: 'ADMIN',
+        },
         create: {
           email: 'admin@oauth.com',
           firstName: 'Bouhouch',
           lastName: 'Amjed',
           password: hashedPassword,
-          role: 'USER',
+          role: 'ADMIN',
         },
       });
 

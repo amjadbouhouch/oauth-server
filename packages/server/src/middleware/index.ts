@@ -3,5 +3,4 @@ export * from './validators';
 export * from './DbClient';
 export * from './jwt/jwtService';
 export * from './BCryptService';
-export * from './RequestValidator';
 export * from './SessionManager';

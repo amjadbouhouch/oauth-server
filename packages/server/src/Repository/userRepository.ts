@@ -15,10 +15,7 @@ export class UserRepository implements IRepository<User> {
   async retrieve(id: string): Promise<User> {
     const user = await this._dbService.user.findUnique({
       where: {
-        id: id,
-      },
-      include: {
-        accessTokens: true,
+        id,
       },
     });
     if (!user) throw new NotFoundError(`User not found with Id=${id}`);

@@ -1,10 +1,11 @@
-import { injectable } from 'inversify';
-import { IRepository } from './../interfaces';
+import { inject, injectable, LazyServiceIdentifer } from 'inversify';
+import { IRepository } from '../interfaces';
 import { Client } from '@oauth/db-client';
 import { DbClient } from 'middleware';
 
 @injectable()
 export class ClientRepository implements IRepository<Client> {
+  constructor(@inject(new LazyServiceIdentifer(() => DbClient)) private readonly _dbService: DbClient) {}
   retrieveByClientId(clientId: string) {
     return this._dbService.client.findUnique({
       where: {
@@ -12,7 +13,6 @@ export class ClientRepository implements IRepository<Client> {
       },
     });
   }
-  constructor(private readonly _dbService: DbClient) {}
   create(payload: any): Promise<Client> {
     throw new Error('Method not implemented.');
   }

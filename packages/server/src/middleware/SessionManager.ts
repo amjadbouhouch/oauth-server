@@ -9,12 +9,12 @@ export class SessionManager {
     const MemoryStore = createMemoryStore(session);
     this.session = session({
       secret: this.SESSION_SECRET,
-      saveUninitialized: false,
+      saveUninitialized: true,
       store: new MemoryStore({
         checkPeriod: 86400000, // prune expired entries every 24h
       }),
-      resave: true,
-      cookie: { maxAge: 3600 },
+      resave: false,
+      cookie: { maxAge: 1000 * 60 * 60 * 24 },
     });
   }
 }

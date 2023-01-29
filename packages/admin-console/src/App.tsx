@@ -13,7 +13,7 @@ import {
 import { useState } from 'react'
 import OAuth from 'OAuth'
 
-const accessToken = localStorage.getItem('token')
+const accessToken = localStorage.getItem('accessToken')
 
 const App = () => {
   const [colorScheme, setColorScheme] = useState<ColorScheme>('light')

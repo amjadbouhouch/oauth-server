@@ -1,17 +1,18 @@
 import bodyParser from 'body-parser';
-import { ClientController, OAuthController, UserController, UserInfoController } from 'controller';
+import { UserController, UserInfoController } from 'controller';
 import cors from 'cors';
 import express, { NextFunction, Response } from 'express';
 import { IServer } from 'interfaces';
 import { InversifyExpressServer } from 'inversify-express-utils';
-import { AccessTokenValidator, BaseHttpError, BCryptService, DbClient, JwtService, SessionManager } from 'middleware';
+import { BaseHttpError, BCryptService, DbClient, JwtService, SessionManager } from 'middleware';
 import morgan from 'morgan';
-import { AccessTokenRepository, ClientRepository, UserRepository } from 'Repository';
-import { AccessTokenService, ClientService, OauthService, UserService } from 'services';
+import { AccessTokenRepository, UserRepository } from 'Repository';
+import { AccessTokenService, OauthService, UserService } from 'services';
 import { STATUS_CODE } from 'utils/constants';
 import path from 'path';
 import { AuthenticationController } from 'authentication';
 import { AuthorizationController, AuthorizationService } from 'authorization';
+import { ClientRepository, ClientController, ClientService } from 'clients';
 
 export default class Server extends IServer {
   //* * */
@@ -48,13 +49,14 @@ export default class Server extends IServer {
       console.log(`🚀 server is running on http://localhost:${port}`);
     });
     process.on('SIGTERM', async () => {
-      console.debug('SIGTERM signal received: closing HTTP server');
-      runningServer.close(async () => {
-        console.debug('HTTP server closed');
-        const db: DbClient = this._container.get<DbClient>(DbClient);
-        await db.disconnect();
-        console.debug('disconnecting from database');
-      });
+      // console.debug('SIGTERM signal received: closing HTTP server');
+      process.exit();
+      // runningServer.close(async () => {
+      //   console.debug('HTTP server closed');
+      //   const db: DbClient = this._container.get<DbClient>(DbClient);
+      //   await db.disconnect();
+      //   console.debug('disconnecting from database');
+      // });
     });
   }
 
@@ -63,17 +65,20 @@ export default class Server extends IServer {
     this._container.bind(SessionManager).toSelf();
     this._container.bind(BCryptService).toSelf();
     this._container.bind(JwtService).toSelf();
-    this._container.bind(AccessTokenValidator).toSelf();
+    // this._container.bind(AccessTokenValidator).toSelf();
     // db
     this._container.bind(DbClient).toSelf();
+    // clients
+    this._container.bind(ClientRepository).toSelf();
+    this._container.bind(ClientService).toSelf();
+    this._container.bind(ClientController).toSelf();
+
     // repositories
     this._container.bind(UserRepository).toSelf();
-    this._container.bind(ClientRepository).toSelf();
     this._container.bind(AccessTokenRepository).toSelf();
 
     // services
     this._container.bind(UserService).toSelf();
-    this._container.bind(ClientService).toSelf();
     this._container.bind(OauthService).toSelf();
     this._container.bind(AccessTokenService).toSelf();
     this._container.bind(AuthorizationService).toSelf();
@@ -83,6 +88,5 @@ export default class Server extends IServer {
     this._container.bind(AuthorizationController).toSelf();
     this._container.bind(UserController).toSelf();
     this._container.bind(UserInfoController).toSelf();
-    this._container.bind(ClientController).toSelf();
   }
 }

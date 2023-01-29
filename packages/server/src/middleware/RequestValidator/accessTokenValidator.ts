@@ -1,15 +1,13 @@
+import { ClientService } from 'clients';
 import { NextFunction, Request, Response } from 'express';
-import { injectable } from 'inversify';
 import { BadRequestError, JwtService } from 'middleware';
-import { AccessTokenService, ClientService, UserService } from 'services';
-import { UnauthorizedError } from './../errors/UnauthorizedError';
-
-@injectable()
-export class AccessTokenValidator {
-  // add resource
-  constructor() {}
-
-  static async verify(req: Request, res: Response, next: NextFunction) {
+import { AccessTokenService, UserService } from 'services';
+import { UnauthorizedError } from '../errors/UnauthorizedError';
+export default class AccessTokenValidator {
+  constructor() {
+    this.execute = this.execute.bind(this);
+  }
+  async execute(req: Request, res: Response, next: NextFunction) {
     const authorizationHeader = req.headers.authorization as string;
     if (!authorizationHeader) throw new UnauthorizedError();
     const [type, token] = authorizationHeader.split(' ');
@@ -17,10 +15,11 @@ export class AccessTokenValidator {
     // throw new UnauthorizedError();
     const payload = jwtService.verify(token);
     if (!payload) throw new UnauthorizedError();
+
     const {
       // accessToken id
       jti,
-      clientId,
+      client_id,
       allowed_origins = [],
       scopes = [],
       azp: clientToAccess,
@@ -32,14 +31,20 @@ export class AccessTokenValidator {
     const clientService: ClientService = global._container.get<ClientService>(ClientService);
 
     const accessToken = await accessTokenService.retrieve(jti as string);
+
     if (type !== accessToken.type) {
-      throw new BadRequestError('missing grant type');
+      throw new BadRequestError();
     }
+
     const user = await userService.retrieve(accessToken.userId);
-    const client = await clientService.retrieveByClientId(clientId);
+
+    const client = await clientService.retrieveByClientId(client_id);
     req.accessToken = accessToken;
     req.user = user;
     req.client = client;
     next();
+  }
+  public static verify() {
+    return new AccessTokenValidator().execute;
   }
 }

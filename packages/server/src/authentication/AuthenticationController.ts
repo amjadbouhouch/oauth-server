@@ -1,8 +1,9 @@
 import { BadRequestError } from 'middleware';
 import { Request, Response } from 'express';
 import { controller, httpGet, httpPost, queryParam, request, requestBody, response } from 'inversify-express-utils';
-import { ClientService, UserService } from 'services';
+import { UserService } from 'services';
 import { QueryBuilder } from 'utils';
+import { ClientService } from 'clients';
 
 /***
  *

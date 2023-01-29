@@ -60,7 +60,7 @@ class BaseAPIClient {
   }
 
   private _handleRequest(config: AxiosRequestConfig): AxiosRequestConfig {
-    const jwtToken = localStorage.getItem('token')
+    const jwtToken = localStorage.getItem('accessToken')
     if (config.headers) {
       if (jwtToken) config.headers['Authorization'] = `Bearer ${jwtToken}`
     }

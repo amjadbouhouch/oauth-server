@@ -5,7 +5,7 @@ import { AccessTokenRepository } from 'Repository';
 import { OAuthResourceOwnerPasswordCredentialsClass } from '../middleware/validators/OAuthRequestTokenClass';
 import { generateUuid } from '../utils/helper';
 import { OAuthAuthorizeClass } from './../middleware/validators/OAuthAuthorizeClass';
-import { ClientService } from './clientService';
+import { ClientService } from '../clients/ClientService';
 import { UserService } from './userService';
 
 @injectable()

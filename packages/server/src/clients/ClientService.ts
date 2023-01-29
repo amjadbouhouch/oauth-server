@@ -2,7 +2,7 @@ import { Client } from '@oauth/db-client';
 import { injectable, inject, LazyServiceIdentifer } from 'inversify';
 import { NotFoundError } from 'middleware';
 import { IService } from '../interfaces/IService';
-import { ClientRepository } from '../Repository';
+import { ClientRepository } from 'clients';
 
 @injectable()
 export class ClientService implements IService<Client> {

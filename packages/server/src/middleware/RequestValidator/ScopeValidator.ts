@@ -11,9 +11,8 @@ export class ScopeValidator {
   execute(req: Request, res: Response, next: NextFunction) {
     const { accessToken, user, client } = req;
     const userScopes = accessToken.scopes as string[];
-
-    // allow
-    if (userScopes.some((s) => this._scopes.includes(s))) next();
+    if (user.role === 'ADMIN' && this._scopes.includes('*')) next();
+    else if (userScopes.some((s) => this._scopes.includes(s))) next();
     else throw new ForbiddenError();
   }
 

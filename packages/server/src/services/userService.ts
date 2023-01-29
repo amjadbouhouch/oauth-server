@@ -9,8 +9,6 @@ export class UserService implements IService<User> {
   constructor(private readonly _userRepository: UserRepository, private readonly _bcryptService: BCryptService) {}
 
   async findByEmailAndPassword(email: string, password: string): Promise<User> {
-    console.log(email);
-
     const user = await this._userRepository.findByEmail(email);
     if (!user) throw new UnauthorizedError('wrong email or password');
     const isMatched = await this._bcryptService.compare(password, user.password);

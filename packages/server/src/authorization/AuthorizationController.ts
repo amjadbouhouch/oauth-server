@@ -79,6 +79,7 @@ export class AuthorizationController {
         .build();
       res.redirect(fullUrl);
     } else {
+      res.send('Authorization Failed');
     }
   }
 
