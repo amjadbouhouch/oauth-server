@@ -8,7 +8,8 @@
     "dev": "lerna run dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "bootstrap": "lerna run bootstrap",
-    "postinstall": "yarn run bootstrap"
+    "postinstall": "yarn run bootstrap",
+    "release": "lerna version --conventional-commits"
   },
   "repository": {
     "type": "git",
