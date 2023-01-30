@@ -10,6 +10,7 @@ export class ValidatorMiddleware {
 
   private async execute(req: Request, res: Response, next: NextFunction) {
     const transformedBody = plainToInstance(this._class, req.body, {
+      exposeDefaultValues: true,
       excludeExtraneousValues: true, // not extra attributes
       // ...this.options,
     });

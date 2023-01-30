@@ -10,7 +10,8 @@
     "bootstrap": "lerna run bootstrap",
     "postinstall": "yarn run bootstrap",
     "release": "lerna version --conventional-commits",
-    "prerelease": "lerna version --conventional-prerelease"
+    "prerelease": "lerna version --conventional-prerelease",
+    "build": "lerna run build --scope {@oauth/server,@oauth/@oauth/admin-console}"
   },
   "repository": {
     "type": "git",

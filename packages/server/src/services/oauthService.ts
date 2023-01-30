@@ -36,7 +36,7 @@ export class OauthService {
    *
    * @returns
    */
-  async requestAccessToken(payload: any): Promise<RequestAccessTokenResponse> {
+  async requestAccessToken(payload: any): Promise<RequestAccessTokenResponse | any> {
     return {
       access_token: '123',
       expires_in: 3600,
@@ -48,7 +48,7 @@ export class OauthService {
    */
   async requestAccessTokenByResourceOwnerPasswordCredentials(
     payload: OAuthResourceOwnerPasswordCredentialsClass,
-  ): Promise<RequestAccessTokenResponse> {
+  ): Promise<RequestAccessTokenResponse | any> {
     const user = await this._userService.findByEmailAndPassword(payload.email, payload.password);
     const client = await this._clientService.retrieveByClientId(payload.client_id);
     // generate accessToken

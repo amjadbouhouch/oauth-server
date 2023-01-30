@@ -8,4 +8,10 @@
 node_modules
 build
 Dockerfile
-lib
+cypress
+playwright-report
+tests
+*.properties
+*.sh
+*.md
+.cache

@@ -12,6 +12,7 @@ describe('JwtService', () => {
     done();
   });
   test('jwt secret should be defined', () => {
+    //@ts-ignore
     expect(instance.jwtSecret).toBeDefined();
   });
   test('sign token output should be defined', async () => {

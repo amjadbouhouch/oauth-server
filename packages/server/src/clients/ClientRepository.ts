@@ -1,6 +1,6 @@
 import { inject, injectable, LazyServiceIdentifer } from 'inversify';
 import { IRepository } from '../interfaces';
-import { Client } from '@oauth/db-client';
+import { Client, DBClient } from '@oauth/db-client';
 import { DbClient } from 'middleware';
 
 @injectable()
@@ -13,8 +13,10 @@ export class ClientRepository implements IRepository<Client> {
       },
     });
   }
-  create(payload: any): Promise<Client> {
-    throw new Error('Method not implemented.');
+  create(data: DBClient.ClientCreateArgs['data']): Promise<Client> {
+    return this._dbService.client.create({
+      data,
+    });
   }
   list(): Promise<Client[]> {
     return this._dbService.client.findMany();

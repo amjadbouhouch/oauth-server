@@ -21,7 +21,7 @@ export class AccessTokenService implements IService<AccessToken> {
   update(payload: any): Promise<void | AccessToken> {
     throw new Error('Method not implemented.');
   }
-
+  //@ts-ignore
   async create(
     user: User,
     client: Client,

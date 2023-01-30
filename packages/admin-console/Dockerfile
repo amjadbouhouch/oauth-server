@@ -4,7 +4,7 @@ ARG STAGING=staging
 
 WORKDIR /admin-console
 COPY package*.json ./
-COPY yarn.lock ./
+# COPY yarn.lock ./
 # RUN npm i -g yarn
 RUN yarn install --immutable
 COPY . .

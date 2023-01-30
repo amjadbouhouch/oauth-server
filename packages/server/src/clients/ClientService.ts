@@ -3,7 +3,7 @@ import { injectable, inject, LazyServiceIdentifer } from 'inversify';
 import { NotFoundError } from 'middleware';
 import { IService } from '../interfaces/IService';
 import { ClientRepository } from 'clients';
-
+import crypto from 'crypto';
 @injectable()
 export class ClientService implements IService<Client> {
   constructor(@inject(new LazyServiceIdentifer(() => ClientRepository)) private _clientRepo: ClientRepository) {}
@@ -23,7 +23,10 @@ export class ClientService implements IService<Client> {
     throw new Error('Method not implemented.');
   }
   create(payload: any): Promise<void | Client> {
-    throw new Error('Method not implemented.');
+    return this._clientRepo.create({
+      ...payload,
+      clientSecret: crypto.randomUUID(),
+    });
   }
   delete(id: string): Promise<void> {
     throw new Error('Method not implemented.');

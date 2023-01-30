@@ -12,6 +12,7 @@ export class JwtService {
   );
 
   getJwtSecret() {
+    //@ts-ignore
     return Buffer.from(this.JWT_SECRET, 'base64');
   }
   /** */

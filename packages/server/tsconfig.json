@@ -21,8 +21,8 @@
     "strict": true,
     "target": "es6",
     "noEmit": false,
-    "outDir": "dist",
-    "watch": true
+    "outDir": "dist"
   },
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }

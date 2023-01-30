@@ -10843,10 +10843,15 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typescript@4.9.4, "typescript@^3 || ^4", typescript@^4.8.2, typescript@^4.9.4:
+"typescript@^3 || ^4", typescript@^4.8.2, typescript@^4.9.4:
   version "4.9.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.4.tgz#a2a3d2756c079abda241d75f149df9d561091e78"
   integrity sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==
+
+"typescript@npm:@typescript-deploys/pr-build@5.0.0-pr-52217-7":
+  version "5.0.0-pr-52217-7"
+  resolved "https://registry.yarnpkg.com/@typescript-deploys/pr-build/-/pr-build-5.0.0-pr-52217-7.tgz#fcb2c0fd581e5598013c2578f9dcb21fdc8964ee"
+  integrity sha512-q1gS3r6DrXAReraahpeqTArRUONL0gmtJbJEVitPyqAu84/Rm5+xKiLd+QKYYLKGLcRW/vcd1KXmxlaCSJQRZQ==
 
 uglify-js@^3.1.4:
   version "3.17.4"

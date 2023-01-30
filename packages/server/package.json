@@ -4,7 +4,7 @@
   "main": "/dist/index.js",
   "license": "MIT",
   "scripts": {
-    "build": "tsc -p tsconfig.json --outDir ./dist && tsc-alias",
+    "build": "tsc -p ./tsconfig.json --outDir ./dist && tsc-alias",
     "dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/index.ts",
     "production": "node ./dist/server.js",
     "test": "jest --runInBand --detectOpenHandles",

@@ -1,14 +1,3 @@
-/*
- *
- * Project: winshot-crm
- * File Created: 04 August 2021 16:28
- * Author: Bouhouch Amjed (amjedbouhouch@gmail.com)
- * -----
- * Last Modified: 01 October 2021 09:35
- * -----
- * Copyright 2021
- */
-
 import axios, {
   AxiosError,
   AxiosInstance,
