@@ -4,15 +4,11 @@ import { controller, httpGet, httpPost, queryParam, request, requestBody, respon
 import { UserService } from 'services';
 import { QueryBuilder } from 'utils';
 import { ClientService } from 'clients';
+import { Logger } from 'config';
 
-/***
- *
- *Login the user & show concent screen
- *
- *
- */
 @controller('')
 export class AuthenticationController {
+  logger = Logger.getLogger(AuthenticationController.name);
   constructor(private readonly _clientService: ClientService, private readonly _userService: UserService) {}
 
   /**
@@ -43,7 +39,6 @@ export class AuthenticationController {
     @queryParam('scope') scope,
     @queryParam('client_id') client_id,
     @queryParam('state') state,
-    @requestBody() body,
   ) {
     // TODO query validation
 

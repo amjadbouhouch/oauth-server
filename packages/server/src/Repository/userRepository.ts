@@ -1,7 +1,7 @@
 import { DbClient, NotFoundError } from 'middleware';
 import { injectable } from 'inversify';
 import { IRepository } from '../interfaces';
-import { User } from '@oauth/db-client';
+import { User } from '@oauth/core';
 
 @injectable()
 export class UserRepository implements IRepository<User> {

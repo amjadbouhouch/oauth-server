@@ -10,6 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "../Diagram.png"
+  theme    = "forest"
+}
+
 model User {
   id           String        @id @default(uuid())
   email        String        @unique
@@ -21,6 +27,7 @@ model User {
   role         Role          @default(USER)
   //
   accessTokens AccessToken[]
+  Client       Client[]
 
   //
   @@index([email])
@@ -39,9 +46,11 @@ model Client {
   isPublic     Boolean       @default(true)
   //
   accessTokens AccessToken[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdBy User   @relation(fields: [userId], references: [id])
+  userId    String
 
   @@index([clientId])
 }

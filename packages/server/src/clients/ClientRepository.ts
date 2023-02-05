@@ -1,6 +1,6 @@
 import { inject, injectable, LazyServiceIdentifer } from 'inversify';
 import { IRepository } from '../interfaces';
-import { Client, DBClient } from '@oauth/db-client';
+import { Client, DBClientArgs } from '@oauth/core';
 import { DbClient } from 'middleware';
 
 @injectable()
@@ -13,7 +13,7 @@ export class ClientRepository implements IRepository<Client> {
       },
     });
   }
-  create(data: DBClient.ClientCreateArgs['data']): Promise<Client> {
+  create(data: DBClientArgs.ClientCreateArgs['data']): Promise<Client> {
     return this._dbService.client.create({
       data,
     });

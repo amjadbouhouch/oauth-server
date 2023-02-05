@@ -31,6 +31,6 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - oauth-server-data:/var/lib/postgresql/data
 volumes:
-  db-data:
+  oauth-server-data:

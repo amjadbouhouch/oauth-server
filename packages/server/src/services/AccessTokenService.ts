@@ -1,11 +1,11 @@
 import { UnauthorizedError, JwtService } from 'middleware';
-import { AccessToken, User, Client } from '@oauth/db-client';
+import { AccessToken, User, Client } from '@oauth/core';
 import { inject, injectable, LazyServiceIdentifer } from 'inversify';
 import { AccessTokenRepository } from 'Repository';
 import { IService } from '../interfaces/IService';
 
 @injectable()
-export class AccessTokenService implements IService<AccessToken> {
+export class AccessTokenService implements IService {
   constructor(
     @inject(new LazyServiceIdentifer(() => AccessTokenRepository)) private _accessTokenRepository: AccessTokenRepository,
     @inject(new LazyServiceIdentifer(() => JwtService)) private _jwtService: JwtService,
@@ -21,7 +21,7 @@ export class AccessTokenService implements IService<AccessToken> {
   update(payload: any): Promise<void | AccessToken> {
     throw new Error('Method not implemented.');
   }
-  //@ts-ignore
+
   async create(
     user: User,
     client: Client,

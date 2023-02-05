@@ -1,5 +1,5 @@
 import React, { createContext } from 'react'
-import { User } from '@oauth/db-client'
+import { User } from '@oauth/core'
 import { useQuery } from '@tanstack/react-query'
 import { userService } from '../api'
 import { isAxiosError } from 'axios'

@@ -1,7 +1,7 @@
-export interface IService<T> {
-  list(): Promise<T[]>;
-  retrieve(id: string): Promise<T>;
-  update(payload): Promise<void | T>;
-  create(payload): Promise<void | T>;
-  delete(id: string): Promise<void>;
+export interface IService {
+  list(): Promise<unknown>;
+  retrieve(id: string): Promise<unknown>;
+  update(payload): Promise<unknown>;
+  create(payload): Promise<unknown>;
+  delete(id: string): Promise<unknown>;
 }

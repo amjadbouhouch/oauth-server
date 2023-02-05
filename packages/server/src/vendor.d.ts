@@ -1,4 +1,4 @@
-import { User, AccessToken, Client } from '@oauth/db-client';
+import { User, AccessToken, Client } from '@oauth/core';
 import { Container } from 'inversify';
 
 declare module 'express' {

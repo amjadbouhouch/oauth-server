@@ -1,4 +1,4 @@
-import { Client } from '@oauth/db-client'
+import { Client } from '@oauth/core'
 import BaseAPIClient from './BaseAPIClient'
 
 class ClientService extends BaseAPIClient {

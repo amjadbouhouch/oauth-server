@@ -1,3 +1,4 @@
+import { Logger } from './../config/Logger';
 import { ClientService } from 'clients';
 import { RequestAccessTokenResponse } from 'interfaces';
 import { inject, injectable, LazyServiceIdentifer } from 'inversify';
@@ -15,6 +16,7 @@ type AuthorizationPayloadType = {
 };
 @injectable()
 export class AuthorizationService {
+  private logger = Logger.getLogger(AuthorizationService.name);
   private _codes = new Map<string, { clientId: string; userId: string; expiredAt: Date; redirectUri: string }>();
   constructor(
     @inject(new LazyServiceIdentifer(() => UserService)) private _userService: UserService,
@@ -84,7 +86,6 @@ export class AuthorizationService {
     if (!payload) {
       throw new BadRequestError();
     }
-
     const isExpired = payload.expiredAt >= new Date();
 
     if (!payload?.clientId || client_id !== payload.clientId || isExpired) throw new BadRequestError();
@@ -93,7 +94,7 @@ export class AuthorizationService {
 
     const client = await this._clientService.retrieveByClientId(payload.clientId);
 
-    if (!(client.redirectUris as string[]).includes(payload.redirectUri)) throw new BadRequestError();
+    if (!(client.redirectUris as string[]).includes(payload.redirectUri)) throw new BadRequestError('redirectUri is not correct');
 
     const response = await this._accessTokenService.create(user, client);
     return response;

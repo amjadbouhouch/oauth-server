@@ -3,7 +3,8 @@ export type {
   User,
   Client,
   AccessToken,
-  Prisma as DBClient,
-  Role,
+  PrismaClient,
+  //
+  Prisma as DBClientArgs,
 } from "@prisma/client";
 export const dbClient = new prisma.PrismaClient();

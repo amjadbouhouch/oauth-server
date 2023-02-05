@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ForbiddenError } from 'middleware/errors';
-import { Role } from '@oauth/db-client';
+import { Role } from '@oauth/core';
 /**
  *
  */

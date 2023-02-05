@@ -1,4 +1,3 @@
-import { DBClient } from '@oauth/db-client';
 export interface IRepository<T> {
   create(payload): Promise<T>;
   list(): Promise<T[]>;

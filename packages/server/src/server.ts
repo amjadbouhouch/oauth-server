@@ -1,62 +1,27 @@
-import bodyParser from 'body-parser';
-import { UserController, UserInfoController } from 'controller';
-import cors from 'cors';
-import express, { NextFunction, Response } from 'express';
-import { IServer } from 'interfaces';
-import { InversifyExpressServer } from 'inversify-express-utils';
-import { BaseHttpError, BCryptService, DbClient, JwtService, SessionManager } from 'middleware';
-import morgan from 'morgan';
-import { AccessTokenRepository, UserRepository } from 'Repository';
-import { AccessTokenService, OauthService, UserService } from 'services';
-import { STATUS_CODE } from 'utils/constants';
-import path from 'path';
 import { AuthenticationController } from 'authentication';
 import { AuthorizationController, AuthorizationService } from 'authorization';
-import { ClientRepository, ClientController, ClientService } from 'clients';
+import { ClientController, ClientRepository, ClientService } from 'clients';
+import { UserController, UserInfoController } from 'controller';
+import { IServer } from 'interfaces';
+import { InversifyExpressServer } from 'inversify-express-utils';
+import { BCryptService, DbClient, JwtService, SessionManager } from 'middleware';
+import { AccessTokenRepository, UserRepository } from 'Repository';
+import { AccessTokenService, OauthService, UserService } from 'services';
 
 export default class Server extends IServer {
   //* * */
   async setup() {
     const server = new InversifyExpressServer(this._container);
-    server.setErrorConfig((app) => {
-      app.use((err: any, _, res: Response, next: NextFunction) => {
-        console.error(err);
-        if (err instanceof BaseHttpError) {
-          res.status(err.statusCode).send(err.message);
-        } else {
-          res.status(STATUS_CODE.INTERNAL_SERVER).send('internal Server Error');
-        }
-        // next();
-      });
-    });
-
-    server.setConfig((app) => {
-      const sessionManager: SessionManager = this._container.get<SessionManager>(SessionManager);
-      app.use(sessionManager.session);
-      // ejs setup
-      app.set('views', path.join(__dirname, 'views'));
-      app.set('view engine', 'ejs');
-      app.use(express.json());
-      app.use(express.static(path.join(__dirname, 'dist')));
-      // support application/x-www-form-urlencoded
-      app.use(bodyParser.urlencoded({ extended: true }));
-      app.use(cors(['http://localhost:3000']));
-      app.use(morgan('dev'));
-    });
+    server.setErrorConfig((app) => this._serverConfig.handleError(app));
+    server.setConfig((app) => this._serverConfig.handleConfig(app));
     const app = server.build();
     const port = process.env.PORT || 5000;
     const runningServer = app.listen(port, () => {
-      console.log(`🚀 server is running on http://localhost:${port}`);
+      this.logger.info(`🚀 server is running on http://localhost:${port}`);
     });
-    process.on('SIGTERM', async () => {
-      // console.debug('SIGTERM signal received: closing HTTP server');
+    process.on('SIGTERM', () => {
+      // runningServer.close();
       process.exit();
-      // runningServer.close(async () => {
-      //   console.debug('HTTP server closed');
-      //   const db: DbClient = this._container.get<DbClient>(DbClient);
-      //   await db.disconnect();
-      //   console.debug('disconnecting from database');
-      // });
     });
   }
 

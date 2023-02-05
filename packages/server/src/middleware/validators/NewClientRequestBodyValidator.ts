@@ -1,4 +1,4 @@
-import { Client } from '@oauth/db-client';
+import { Client } from '@oauth/core';
 import { Expose } from 'class-transformer';
 import { IsArray, IsBoolean, IsDefined, IsOptional, IsString } from 'class-validator';
 

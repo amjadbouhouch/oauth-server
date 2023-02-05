@@ -11,13 +11,14 @@
     "test:watch": "jest --watch --runInBand --detectOpenHandles --verbose",
     "lint": "eslint src --max-warnings=0 --fix",
     "typecheck": "tsc --project tsconfig.json --noEmit",
-    "tailwind:build": "npx tailwindcss -i ./src/*.css ./src/*.ejs  -o ./src/dist/output.css --watch"
+    "tailwind:build": "npx tailwindcss -i ./src/*.css ./src/*.ejs  -o ./src/assets/output.css --watch"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
+    "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^8.6.0",
     "ejs": "^3.1.8",

@@ -1,4 +1,0 @@
--- AlterTable
-ALTER TABLE "Client" ADD COLUMN     "enabled" BOOLEAN NOT NULL DEFAULT true,
-ADD COLUMN     "webOrigins" JSONB NOT NULL DEFAULT '[]',
-ALTER COLUMN "name" SET DEFAULT '';

@@ -1,26 +1,33 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'USER');
 
-  - You are about to drop the column `name` on the `User` table. All the data in the column will be lost.
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL DEFAULT '',
+    "lastName" TEXT NOT NULL DEFAULT '',
+    "password" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "role" "Role" NOT NULL DEFAULT 'USER',
 
-*/
--- AlterTable
-ALTER TABLE "User" DROP COLUMN "name",
-ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "firstName" TEXT,
-ADD COLUMN     "lastName" TEXT,
-ADD COLUMN     "password" TEXT,
-ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Client" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "name" TEXT NOT NULL DEFAULT '',
     "clientId" TEXT NOT NULL,
     "clientSecret" TEXT NOT NULL,
     "redirectUris" JSONB NOT NULL DEFAULT '[]',
+    "enabled" BOOLEAN NOT NULL DEFAULT true,
+    "webOrigins" JSONB NOT NULL DEFAULT '[]',
+    "isPublic" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "Client_pkey" PRIMARY KEY ("id")
 );
@@ -35,11 +42,18 @@ CREATE TABLE "AccessToken" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "scopes" JSONB NOT NULL DEFAULT '[]',
+    "type" TEXT NOT NULL DEFAULT 'Bearer',
     "userId" TEXT NOT NULL,
     "clientId" TEXT NOT NULL,
 
     CONSTRAINT "AccessToken_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE INDEX "User_email_idx" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Client_clientId_key" ON "Client"("clientId");
@@ -56,8 +70,8 @@ CREATE UNIQUE INDEX "AccessToken_refreshToken_key" ON "AccessToken"("refreshToke
 -- CreateIndex
 CREATE INDEX "AccessToken_userId_clientId_idx" ON "AccessToken"("userId", "clientId");
 
--- CreateIndex
-CREATE INDEX "User_email_idx" ON "User"("email");
+-- AddForeignKey
+ALTER TABLE "Client" ADD CONSTRAINT "Client_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "AccessToken" ADD CONSTRAINT "AccessToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

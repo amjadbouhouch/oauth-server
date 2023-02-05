@@ -1,4 +1,4 @@
-import { User, Client } from '@oauth/db-client';
+import { User, Client } from '@oauth/core';
 import { injectable } from 'inversify';
 import jwt from 'jsonwebtoken';
 import { generateUuid } from '../../utils/helper';

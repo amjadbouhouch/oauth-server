@@ -1,5 +1,5 @@
 import { inject, injectable, LazyServiceIdentifer } from 'inversify';
-import { dbClient } from '@oauth/db-client';
+import { dbClient } from '@oauth/core';
 import { generateId } from '../utils/helper';
 import { BCryptService } from './';
 import { Constants } from 'utils';
@@ -18,7 +18,7 @@ export class DbClient {
       // await dbClient.user.deleteMany();
       // create first user
       const hashedPassword = await this._bcryptService.hash('admin');
-      await dbClient.user.upsert({
+      const user = await dbClient.user.upsert({
         where: { email: 'admin@oauth.com' },
         update: {
           role: 'ADMIN',
@@ -37,14 +37,21 @@ export class DbClient {
         where: {
           clientId: Constants.ADMIN_CONSOLE_CLIENT_ID,
         },
-        update: {},
+        update: {
+          redirectUris: ['http://localhost:3001/oauth'],
+        },
         create: {
           clientId: Constants.ADMIN_CONSOLE_CLIENT_ID,
           clientSecret: generateId(),
           name: 'Admin console',
-          redirectUris: ['http://localhost:3000/oauth'],
+          redirectUris: ['http://localhost:3001/oauth'],
           isPublic: false,
           enabled: true,
+          createdBy: {
+            connect: {
+              id: user.id,
+            },
+          },
         },
       });
     } catch (error) {

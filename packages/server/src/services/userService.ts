@@ -1,7 +1,7 @@
 import { IService } from '../interfaces/IService';
 import { injectable } from 'inversify';
 import { UserRepository } from '../Repository';
-import { User } from '@oauth/db-client';
+import { User } from '@oauth/core';
 import { BCryptService, UnauthorizedError, NotFoundError } from 'middleware';
 
 @injectable()

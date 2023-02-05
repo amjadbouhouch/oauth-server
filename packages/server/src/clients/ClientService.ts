@@ -1,11 +1,10 @@
-import { Client } from '@oauth/db-client';
-import { injectable, inject, LazyServiceIdentifer } from 'inversify';
-import { NotFoundError } from 'middleware';
-import { IService } from '../interfaces/IService';
+import { Client } from '@oauth/core';
 import { ClientRepository } from 'clients';
 import crypto from 'crypto';
+import { inject, injectable, LazyServiceIdentifer } from 'inversify';
+import { NotFoundError } from 'middleware';
 @injectable()
-export class ClientService implements IService<Client> {
+export class ClientService {
   constructor(@inject(new LazyServiceIdentifer(() => ClientRepository)) private _clientRepo: ClientRepository) {}
   list(): Promise<Client[]> {
     return this._clientRepo.list();

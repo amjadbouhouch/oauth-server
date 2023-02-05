@@ -1,13 +1,13 @@
 import { IRepository } from '../interfaces/IRepository';
 import { injectable } from 'inversify';
-import { AccessToken, DBClient } from '@oauth/db-client';
+import { AccessToken, DBClientArgs } from '@oauth/core';
 import { DbClient } from 'middleware';
 
 @injectable()
 export class AccessTokenRepository implements IRepository<AccessToken> {
   constructor(private _dbClient: DbClient) {}
 
-  create(payload: DBClient.AccessTokenCreateInput): Promise<AccessToken> {
+  create(payload: DBClientArgs.AccessTokenCreateInput): Promise<AccessToken> {
     return this._dbClient.accessToken.create({
       data: payload,
     });
